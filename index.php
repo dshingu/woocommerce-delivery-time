@@ -1,4 +1,3 @@
-
 <?php
 /*
  * Plugin Name: Delivery Time for WooCommerce
@@ -19,6 +18,7 @@ if ( ! function_exists( 'add_action' ) ) {
 if ( in_array( $woocommerce_path, wp_get_active_and_valid_plugins() ) ) {
    
     include( 'includes/WPF_WC_DeliveryTime.php' );
+    register_activation_hook( __FILE__, [ 'WPF_WC_DeliveryTime', 'activate' ] );
 
 }
 

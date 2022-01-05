@@ -10,6 +10,10 @@
 class WPF_WC_DeliveryTime
 {
 
+    private static $defaults = [
+        'display_on' => ['single product page']
+    ];
+
     public static function init () {
 
         // add filter to adding delivery settings tab to the WooCommerce admin page
@@ -49,6 +53,13 @@ class WPF_WC_DeliveryTime
         add_action( 'wp_head', [ new self, 'custom_css' ] );
     }
 
+    public static function activate () {
+
+        $display_on = get_option( 'display_on', true );
+        if ( ! $display_on ) { update_option( 'display_on', self::$defaults[ 'display_on' ] ); }
+
+    }
+
     // our callback method to add our custom tab to woocommerce setting page
     public static function add_delivery_settings_tab ( $settings_tabs ) {
         $settings_tabs['delivery_time'] = __( 'Delivery Time', 'wc_delivery_time' );
@@ -56,13 +67,13 @@ class WPF_WC_DeliveryTime
     }
 
     // our callback method to add content to our tab
-    public static function delivery_settings_tab_content () {
+    public function delivery_settings_tab_content () {
         woocommerce_admin_fields( self::delivery_settings_data() );
     }
 
 
     // our callback method to add content to our custom fields to our tab
-    public static function delivery_settings_data () {
+    public function delivery_settings_data () {
 
         $settings = [
             'title' => [
@@ -101,13 +112,13 @@ class WPF_WC_DeliveryTime
 
 
     // our callback method to update our settings
-    public static function update_settings () {
+    public function update_settings () {
         woocommerce_update_options( self::delivery_settings_data() );
     }
 
 
     // our callback method to add our custom tab to the product metabox
-    public static function delivery_setting_mb_tab ( $tabs ) {
+    public function delivery_setting_mb_tab ( $tabs ) {
 
         $tabs[ 'delivery_setting' ] = [
             'label' => __( 'Delivery Setting', 'wc_delivery_time '),
@@ -121,7 +132,7 @@ class WPF_WC_DeliveryTime
 
 
     // our callback method to add our panel to the product metabox
-    public static function delivery_setting_product_data () {
+    public function delivery_setting_product_data () {
         
         echo '<div id="delivery_setting_product_data" class="panel woocommerce_options_panel hidden">';
 
@@ -143,7 +154,7 @@ class WPF_WC_DeliveryTime
     }
 
     // our callback method to save our product custom fields
-    public static function save_delivery_setting_product_data () {
+    public function save_delivery_setting_product_data () {
 
         $delivery_time              = isset( $_POST[ 'delivery_time' ] ) ? $_POST[ 'delivery_time' ] : null;
         $delivery_time_description  = isset( $_POST[ 'delivery_time_description' ] ) ? $_POST[ 'delivery_time_description' ] : null;
@@ -154,7 +165,7 @@ class WPF_WC_DeliveryTime
     }
 
     // our callback method to display info on our archive page
-    public static function archive_page_show_info () {
+    public function archive_page_show_info () {
         
         $id = get_the_ID();
         $delivery_time = null;
@@ -179,7 +190,7 @@ class WPF_WC_DeliveryTime
     }
 
     // our callback method to add our panel to the product metabox
-    public static function single_page_show_info () {
+    public function single_page_show_info () {
         
         $id = get_the_ID();
         $delivery_time = null;
@@ -204,7 +215,7 @@ class WPF_WC_DeliveryTime
     }
 
     // our callback method to add our custom css 
-    public static function custom_css () {
+    public function custom_css () {
 
         // get the color from WordPress
         $color = get_option( 'color', true);
@@ -245,7 +256,7 @@ class WPF_WC_DeliveryTime
     }
 
     // our custom callback to add script to WordPress
-    public static function enqueue_script () {
+    public function enqueue_script () {
 
 
         $attr = 'class="wc_deliv_desc"';
@@ -285,7 +296,7 @@ class WPF_WC_DeliveryTime
     }
 
     // our custom callback to hook into WordPress ajax
-    public static function ajax_get_product_delivery_time_desc () {
+    public function ajax_get_product_delivery_time_desc () {
         
         $post_id = $_POST[ 'id' ];
         $delivery_time_desc = get_post_meta( $post_id, 'delivery_time_description', true );
@@ -298,4 +309,6 @@ class WPF_WC_DeliveryTime
 
 }
 
+
 WPF_WC_DeliveryTime::init();
+
