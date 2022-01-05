@@ -10,8 +10,15 @@
  *
  */
 
-if ( !function_exists( 'add_action' ) ) {
+$woocommerce_path = trailingslashit( WP_PLUGIN_DIR ) . 'woocommerce/woocommerce.php';
+
+if ( ! function_exists( 'add_action' ) ) {
 	exit;
 }
 
-include( 'includes/WPF_WC_DeliveryTime.php' );
+if ( in_array( $woocommerce_path, wp_get_active_and_valid_plugins() ) ) {
+   
+    include( 'includes/WPF_WC_DeliveryTime.php' );
+
+}
+
